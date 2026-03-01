@@ -471,7 +471,7 @@ fn generate_shapes(lense: Lense, light: Light) -> Vec<(Shape, Color)> {
     let mut shapes: Vec<(Shape, Color)> = Vec::new();
     let mut rays: Vec<Ray> = Vec::new();
 
-    let max_ray_count = 5_000;
+    let max_ray_count = 100_000;
     let mut ray_count = 0;
 
     for i in 0..light.ray_count {
@@ -523,12 +523,10 @@ fn generate_shapes(lense: Lense, light: Light) -> Vec<(Shape, Color)> {
         }
 
         if intersections.is_empty() {
-            dbg!(&ray);
-            dbg!("didnt hit anything");
             shapes.push((
                 Shape::Line(Line {
                     start: ray.start,
-                    end: ray.start + (ray.direction * 200.0),
+                    end: ray.start + (ray.direction * 10000.0),
                 }),
                 Color::WHITESMOKE,
             ));
@@ -559,7 +557,6 @@ fn generate_shapes(lense: Lense, light: Light) -> Vec<(Shape, Color)> {
             AIR_INDEX_OF_REFRACTION,
             lense.index_of_refraction,
         );
-        dbg!(&direction);
         rays.push(Ray {
             start: closest_intersection.1.point,
             direction: direction,
@@ -724,8 +721,6 @@ fn calculate_refraction_direction(
 
     // if positive then rays poiting in the same direction, if negative then pointing opposite
     // direction
-
-    dbg!(refraction_angle / PI * 180.0);
 
     // rotate the line normal by the side, but swapped if the sign is opposite
     line_normal.rotated_by(Rotor2::from_angle(side * refraction_angle))
